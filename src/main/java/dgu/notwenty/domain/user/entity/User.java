@@ -20,22 +20,18 @@ public class User {
     @Column(nullable = false)
     private String userName;
 
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserPosition userPosition;
 
     @Column(nullable = false)
     private String oauthId;
 
-    @Column(nullable = false)
     private Double latitude;
 
-    @Column(nullable = false)
     private Double longitude;
 
-    @Column(nullable = false)
     private LocalDateTime workStart;
 
-    @Column(nullable = false)
     private LocalDateTime workEnd;
 
     @OneToMany(mappedBy = "user")

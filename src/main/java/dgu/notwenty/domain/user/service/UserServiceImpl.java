@@ -1,6 +1,10 @@
 package dgu.notwenty.domain.user.service;
 
-import dgu.notwenty.domain.user.dto.UserDTO.UserPositionRequest;
+import dgu.notwenty.domain.user.converter.UserConverter;
+import dgu.notwenty.domain.user.dto.UserDTO.Request.UserPositionRequest;
+import dgu.notwenty.domain.user.dto.UserDTO.Response.UserInfoResponse;
+import dgu.notwenty.domain.user.dto.UserDTO.Request.UserCreateRequest;
+import dgu.notwenty.domain.user.dto.UserDTO.Response.UserCreateResponse;
 import dgu.notwenty.domain.user.entity.User;
 import dgu.notwenty.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +26,19 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return "직책 설정에 성공하였습니다.";
+    }
+
+    public UserInfoResponse getUserInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
+
+        return UserConverter.toUserInfoResponse(user);
+    }
+
+    public UserCreateResponse createUser(UserCreateRequest request) {
+        User user = UserConverter.toUserCreate(request);
+        User savedUser = userRepository.save(user);
+
+        return UserConverter.toUserCreateResponse(savedUser);
     }
 }
