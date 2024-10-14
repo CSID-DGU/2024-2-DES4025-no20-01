@@ -1,4 +1,4 @@
-package dgu.notwenty.domain.user;
+package dgu.notwenty.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

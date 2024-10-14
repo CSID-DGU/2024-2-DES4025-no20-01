@@ -1,6 +1,6 @@
-package dgu.notwenty.domain.user;
+package dgu.notwenty.domain.user.entity;
 
-import dgu.notwenty.domain.work.Work;
+import dgu.notwenty.domain.work.entity.Work;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,7 +21,7 @@ public class User {
     private String userName;
 
     @Column(nullable = false)
-    private String userPosition;
+    private UserPosition userPosition;
 
     @Column(nullable = false)
     private String oauthId;
@@ -46,4 +46,9 @@ public class User {
 
     @OneToMany(mappedBy = "subject")
     private List<Connect> connectAsSubject;
+
+    public void updateUserPosition(UserPosition userPosition) {
+        this.userPosition = userPosition;
+    }
+
 }
