@@ -24,12 +24,9 @@ public class Work {
     @Column(nullable = false)
     private LocalDateTime startTime;
 
-    @Column(nullable = false)
-    private Boolean startStatus;
-
     private LocalDateTime endTime;
 
-    private Boolean endStatus;
+    private Boolean status;
 
     @OneToMany(mappedBy = "work")
     private List<Workout> outList;
