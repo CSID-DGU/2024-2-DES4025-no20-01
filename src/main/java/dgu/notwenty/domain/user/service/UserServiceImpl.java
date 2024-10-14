@@ -5,6 +5,7 @@ import dgu.notwenty.domain.user.dto.UserDTO.Request.UserPositionRequest;
 import dgu.notwenty.domain.user.dto.UserDTO.Response.UserInfoResponse;
 import dgu.notwenty.domain.user.dto.UserDTO.Request.UserCreateRequest;
 import dgu.notwenty.domain.user.dto.UserDTO.Response.UserCreateResponse;
+import dgu.notwenty.domain.user.dto.UserDTO.Request.WorkInfoRequest;
 import dgu.notwenty.domain.user.entity.User;
 import dgu.notwenty.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,5 +41,16 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
 
         return UserConverter.toUserCreateResponse(savedUser);
+    }
+
+    public String setWorkInfo(Long userId, WorkInfoRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
+
+        user.updateWorkInfo(request.getLatitude(), request.getLongitude(),
+                request.getWorkStart(), request.getWorkEnd());
+        userRepository.save(user);
+
+        return "근무지 정보 설정에 성공하였습니다.";
     }
 }

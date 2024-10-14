@@ -4,7 +4,7 @@ import dgu.notwenty.domain.user.entity.UserPosition;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class UserDTO {
 
@@ -23,9 +23,6 @@ public class UserDTO {
         @NoArgsConstructor(access = AccessLevel.PROTECTED)
         @AllArgsConstructor(access = AccessLevel.PROTECTED)
         public static class WorkInfoRequest {
-            @Schema(description = "유저 직책", example = "WORKER")
-            private UserPosition userPosition;
-
             @Schema(description = "위도", example = "37.5665")
             private Double latitude;
 
@@ -33,10 +30,10 @@ public class UserDTO {
             private Double longitude;
 
             @Schema(description = "근무 시작 시간", example = "2024-01-01T08:00:00")
-            private LocalDateTime workStart;
+            private LocalTime workStart;
 
             @Schema(description = "근무 종료 시간", example = "2024-01-01T17:00:00")
-            private LocalDateTime workEnd;
+            private LocalTime workEnd;
         }
 
         @Builder
@@ -71,10 +68,10 @@ public class UserDTO {
             private Double longitude;
 
             @Schema(description = "근무 시작 시간", example = "2024-01-01T08:00:00")
-            private LocalDateTime workStart;
+            private LocalTime workStart;
 
             @Schema(description = "근무 종료 시간", example = "2024-01-01T17:00:00")
-            private LocalDateTime workEnd;
+            private LocalTime workEnd;
         }
 
         @Builder

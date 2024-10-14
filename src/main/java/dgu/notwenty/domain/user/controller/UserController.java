@@ -1,5 +1,6 @@
 package dgu.notwenty.domain.user.controller;
 
+import dgu.notwenty.domain.user.dto.UserDTO.Request.WorkInfoRequest;
 import dgu.notwenty.domain.user.dto.UserDTO.Request.UserCreateRequest;
 import dgu.notwenty.domain.user.dto.UserDTO.Request.UserPositionRequest;
 import dgu.notwenty.domain.user.dto.UserDTO.Response.UserInfoResponse;
@@ -58,5 +59,21 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<UserCreateResponse> createUser(@RequestBody UserCreateRequest request) {
         return ResponseEntity.ok(userService.createUser(request));
+    }
+
+    @Operation(
+            summary = "근무지 정보 설정",
+            description = "유저의 직책, 근무지 위치(위도/경도), 근무 시작 및 종료 시간을 설정합니다.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "근무지 정보 설정 성공", content = @Content(schema = @Schema(implementation = UserInfoResponse.class))),
+                    @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content(schema = @Schema(hidden = true))),
+                    @ApiResponse(responseCode = "404", description = "유저를 찾을 수 없음", content = @Content(schema = @Schema(hidden = true))),
+            }
+    )
+    @PatchMapping("/update/workInfo/{userId}")
+    public ResponseEntity<String> setWorkInfo(
+            @PathVariable Long userId,
+            @RequestBody WorkInfoRequest request) {
+        return ResponseEntity.ok(userService.setWorkInfo(userId, request));
     }
 }
