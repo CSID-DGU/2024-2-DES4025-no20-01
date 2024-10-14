@@ -1,6 +1,6 @@
-package dgu.notwenty.domain.work;
+package dgu.notwenty.domain.work.entity;
 
-import dgu.notwenty.domain.user.User;
+import dgu.notwenty.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
