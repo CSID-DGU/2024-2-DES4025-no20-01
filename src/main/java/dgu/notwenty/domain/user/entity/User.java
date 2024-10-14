@@ -4,7 +4,7 @@ import dgu.notwenty.domain.work.entity.Work;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -30,9 +30,9 @@ public class User {
 
     private Double longitude;
 
-    private LocalDateTime workStart;
+    private LocalTime workStart;
 
-    private LocalDateTime workEnd;
+    private LocalTime workEnd;
 
     @OneToMany(mappedBy = "user")
     private List<Work> workList;
@@ -47,4 +47,10 @@ public class User {
         this.userPosition = userPosition;
     }
 
+    public void updateWorkInfo(Double latitude, Double longitude, LocalTime workStart, LocalTime workEnd) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.workStart = workStart;
+        this.workEnd = workEnd;
+    }
 }
