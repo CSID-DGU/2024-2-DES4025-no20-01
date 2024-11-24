@@ -18,7 +18,7 @@ public class WorkConverter {
         return WorkStartResponse.builder()
                 .workId(work.getWorkId())
                 .startTime(work.getStartTime())
-                .userId(work.getUser().getUserId())
+                .userId(work.getUser().getId())
                 .status(work.getStatus())
                 .build();
     }

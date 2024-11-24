@@ -5,8 +5,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface ConnectRepositoy extends JpaRepository<Connect, Long> {
+public interface ConnectRepository extends JpaRepository<Connect, Long> {
     List<Connect> findBySubjectId(Long subjectId);
+    List<Connect> findByWorkerId(Long workerId);
+    Optional<Connect> findBySubjectIdAndWorkerId(Long subjectId, Long workerId);
 }
