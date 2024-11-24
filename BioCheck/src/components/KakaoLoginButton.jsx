@@ -11,6 +11,8 @@ export default function KakaoLoginButton({ onPress }) {
 
 const styles = StyleSheet.create({
   button: {
+    width: 300, // 로고 너비
+    height: 50, // 로고 높이
     backgroundColor: "#FEE500", // 카카오 노란색
     padding: 15,
     borderRadius: 8,

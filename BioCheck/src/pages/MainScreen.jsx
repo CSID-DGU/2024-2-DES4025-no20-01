@@ -1,16 +1,21 @@
 import React from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import KakaoLoginButton from "../components/KakaoLoginButton";
 
 const MainScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      {/* 로고 이미지 */}
-      <Image
-        source={require("../assets/BioCheck.png")} // 로고 이미지 파일 경로
-        style={styles.logo}
-      />
-      {/* 로그인 버튼 */}
+      {/* 로고 이미지 (클릭 가능) */}
+      <TouchableOpacity
+        onPress={() => navigation.navigate("WelfareRegistrationScreen")}
+      >
+        <Image
+          source={require("../assets/BioCheck.png")} // 로고 이미지 파일 경로
+          style={styles.logo}
+        />
+      </TouchableOpacity>
+
+      {/* 카카오 로그인 버튼 */}
       <KakaoLoginButton
         onPress={() => navigation.navigate("KakaoLoginScreen")}
       />
