@@ -6,6 +6,7 @@ import WelfareRegistrationScreen from "../pages/WelfareRegistrationScreen";
 import AttendanceScreen from "../pages/AttendanceScreen";
 import ClockInScreen from "../pages/ClockInScreen";
 import WelfareItemRegistrationScreen from "../pages/WelfareItemRegistrationScreen";
+import LeaveReasonScreen from "../pages/LeaveReasonScreen";
 
 const Stack = createStackNavigator();
 
@@ -41,6 +42,11 @@ const AuthStack = () => {
         name="WelfareItemRegistrationScreen"
         component={WelfareItemRegistrationScreen}
         options={{ title: "복지 물품 등록" }}
+      />
+      <Stack.Screen
+        name="LeaveReasonScreen"
+        component={LeaveReasonScreen}
+        options={{ title: "이탈 사유 등록" }}
       />
     </Stack.Navigator>
   );

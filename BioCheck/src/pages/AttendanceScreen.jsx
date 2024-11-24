@@ -43,7 +43,10 @@ const AttendanceScreen = ({ navigation }) => {
         >
           <Text style={styles.buttonText}>복지 물품 추가 등록</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.mainButton}>
+        <TouchableOpacity
+          style={styles.mainButton}
+          onPress={() => navigation.navigate("LeaveReasonScreen")}
+        >
           <Text style={styles.buttonText}>이탈 사유 기재하러가기</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.mainButton}>
