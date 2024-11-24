@@ -49,7 +49,10 @@ const AttendanceScreen = ({ navigation }) => {
         >
           <Text style={styles.buttonText}>이탈 사유 기재하러가기</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.mainButton}>
+        <TouchableOpacity
+          style={styles.mainButton}
+          onPress={() => navigation.navigate("DailyReportScreen")}
+        >
           <Text style={styles.buttonText}>오늘의 기록 작성</Text>
         </TouchableOpacity>
       </View>
