@@ -10,3 +10,11 @@ spring:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
+  jwt:
+    secret: ${JWT_SECRET}
+
+  security:
+    kakao:
+      auth:
+        client: ${REST_API_KEY}
+        redirect: ${REDIRECT_URI}

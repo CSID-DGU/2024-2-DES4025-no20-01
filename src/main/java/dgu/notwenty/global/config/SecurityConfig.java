@@ -14,26 +14,26 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    // 허용 url
+    public static final String[] ALLOWED_URLS = {
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/v3/api-docs/**",
+            "/api/auth/kakao/login/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Allow all requests without authentication
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(
-//                                new AntPathRequestMatcher("/"),
-//                                new AntPathRequestMatcher("/api/v0/auth/**"),
-//                                new AntPathRequestMatcher("/swagger-ui.html"),
-//                                new AntPathRequestMatcher("/swagger-ui/**"),
-//                                new AntPathRequestMatcher("/v3/api-docs/**"),
-//                                new AntPathRequestMatcher("/api-docs/**"),
-//                                new AntPathRequestMatcher("/health"),
-//                                new AntPathRequestMatcher("/api/user/register")
-//                        ).permitAll() // 이 경로들은 모두 인증 없이 접근 가능
-//                        .anyRequest().authenticated() // 그 외의 모든 경로는 인증 필요
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless 설정
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers(ALLOWED_URLS).permitAll()  // 허용 URL 설정
+                                .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
+                );
+
         return httpSecurity.build();
     }
 }
