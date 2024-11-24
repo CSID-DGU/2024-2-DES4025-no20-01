@@ -77,7 +77,7 @@ public class UserController {
         return ResponseEntity.ok(userService.searchSubjectInfo(name));
     }
 
-    @Operation(summary = "연결된 복지 대상자 조회", description = "연결된 복지 대상자들을 조회합니다.")
+    @Operation(summary = "연결된 복지 대상자 조회", description = "복지사 본인과 연결된 복지 대상자들을 조회합니다.")
     @GetMapping("/get/subjectInfo")
     public ResponseEntity<UserDTO.Response.SubjectInfoListResponse> getConnectedSubjectInfo(
             @RequestHeader("Authorization") String token) {
@@ -112,7 +112,7 @@ public class UserController {
         return ResponseEntity.ok(userService.disconnectSubject(userId, request));
     }
 
-    @Operation(summary = "복지대상자 서비스 위치 등록", description = "복지대상자가 서비스 받을 위치를 등록합니다.")
+    @Operation(summary = "복지 대상자 주소 등록", description = "복지 대상자가 서비스 받을 위치를 등록합니다.")
     @PatchMapping("/update/location")
     public ResponseEntity<String> setLocation(
             @RequestHeader("Authorization") String token,
