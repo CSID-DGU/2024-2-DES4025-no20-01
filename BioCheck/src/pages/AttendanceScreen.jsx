@@ -37,11 +37,14 @@ const AttendanceScreen = ({ navigation }) => {
 
       {/* 주요 버튼 */}
       <View style={styles.buttonGroup}>
-        <TouchableOpacity style={styles.mainButton}>
-          <Text style={styles.buttonText}>복지 활동 추가 등록</Text>
+        <TouchableOpacity
+          style={styles.mainButton}
+          onPress={() => navigation.navigate("WelfareItemRegistrationScreen")}
+        >
+          <Text style={styles.buttonText}>복지 물품 추가 등록</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.mainButton}>
-          <Text style={styles.buttonText}>이번 사후 기록해주었나요?</Text>
+          <Text style={styles.buttonText}>이탈 사유 기재하러가기</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.mainButton}>
           <Text style={styles.buttonText}>오늘의 기록 작성</Text>

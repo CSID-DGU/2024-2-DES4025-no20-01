@@ -5,6 +5,7 @@ import KakaoLoginScreen from "../pages/loginScreen"; // 카카오 로그인 화�
 import WelfareRegistrationScreen from "../pages/WelfareRegistrationScreen";
 import AttendanceScreen from "../pages/AttendanceScreen";
 import ClockInScreen from "../pages/ClockInScreen";
+import WelfareItemRegistrationScreen from "../pages/WelfareItemRegistrationScreen";
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,11 @@ const AuthStack = () => {
         name="ClockInScreen"
         component={ClockInScreen}
         options={{ title: "출근 도장" }}
+      />
+      <Stack.Screen
+        name="WelfareItemRegistrationScreen"
+        component={WelfareItemRegistrationScreen}
+        options={{ title: "복지 물품 등록" }}
       />
     </Stack.Navigator>
   );
