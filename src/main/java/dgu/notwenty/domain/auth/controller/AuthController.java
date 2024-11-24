@@ -16,7 +16,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @Operation(summary = "JWT 토큰 발급", description = "카카오 인가코드로 JWT토큰을 발급합니다.")
+    @Operation(summary = "카카오 로그인", description = "카카오 인가코드로 JWT토큰을 발급합니다.")
     @GetMapping("/kakao/login/{code}")
     public ResponseEntity<KakaoDTO.Response.KakaoAuthResponse> kakaoLogin(
             @PathVariable String code) {

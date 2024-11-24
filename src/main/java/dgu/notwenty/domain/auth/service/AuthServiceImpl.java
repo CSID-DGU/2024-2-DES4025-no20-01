@@ -6,6 +6,7 @@ import dgu.notwenty.domain.auth.dto.KakaoDTO.Response.KakaoProfile;
 import dgu.notwenty.domain.auth.dto.KakaoDTO.Response.OAuthToken;
 import dgu.notwenty.domain.auth.util.JWTUtil;
 import dgu.notwenty.domain.auth.util.KakaoUtil;
+import dgu.notwenty.domain.user.converter.UserConverter;
 import dgu.notwenty.domain.user.entity.User;
 import dgu.notwenty.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +29,14 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseGet(() -> createNewUser(kakaoProfile));
 
-        String token = jwtUtil.createJwt(user.getId());
+        String token = jwtUtil.createJwt(user.getId(), user.getEmail());
 
-        return AuthConverter.toKakaoAuthResponse(user, token);
+        return AuthConverter.toKakaoAuth(user, token);
     }
 
     private User createNewUser(KakaoProfile kakaoProfile) {
 
-        User newUser = AuthConverter.toUser(
+        User newUser = UserConverter.toUser(
                 kakaoProfile.getProperties().getNickname(),
                 kakaoProfile.getKakao_account().getEmail(),
                 null,

@@ -1,6 +1,8 @@
-package dgu.notwenty.domain.user.dto;
+package dgu.notwenty.domain.auth.dto;
 
 import dgu.notwenty.domain.user.entity.User;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +11,9 @@ import java.util.Collection;
 import java.util.Collections;
 
 @RequiredArgsConstructor
-public class UserDetailsDTO implements UserDetails {
+@Builder
+@Getter
+public class AuthSessionDTO implements UserDetails {
 
     private final User user;
 
@@ -19,8 +23,9 @@ public class UserDetailsDTO implements UserDetails {
     }
 
     @Override
-    public String getUsername() { return user.getEmail(); }
+    public String getUsername() { return user.getEmail(); } // 고유성을 위해 name대신 email
 
     @Override
     public String getPassword() { return null; }
+
 }
