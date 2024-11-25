@@ -24,7 +24,7 @@ public class WorkServiceImpl implements WorkService {
 
     public String startWork(Long workerId, WorkStartRequest workStartRequest) {
         User worker = userRepository.findById(workerId)
-                .orElseThrow(() -> new NoSuchElementException("해당 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("해당 복지사를 찾을 수 없습니다."));
 
         Optional<Work> work = workRepository.findByWorkerIdAndDate(workerId, workStartRequest.getDate());
         if(work.isPresent()) {
@@ -39,7 +39,7 @@ public class WorkServiceImpl implements WorkService {
 
     public String endWork(Long workerId, WorkEndRequest workEndRequest) {
         User worker = userRepository.findById(workerId)
-                .orElseThrow(() -> new NoSuchElementException("해당 사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchElementException("해당 복지사를 찾을 수 없습니다."));
 
         Work work = workRepository.findByWorkerIdAndDate(workerId, workEndRequest.getDate())
                 .orElseThrow(() -> new NoSuchElementException("해당 날짜에 출근한 기록을 찾을 수 없습니다."));

@@ -1,6 +1,5 @@
 package dgu.notwenty.domain.work.service;
 
-import dgu.notwenty.domain.work.dto.WorkDTO;
 import dgu.notwenty.domain.work.dto.WorkDTO.Request.WorkEndRequest;
 import dgu.notwenty.domain.work.dto.WorkDTO.Request.WorkStartRequest;
 
