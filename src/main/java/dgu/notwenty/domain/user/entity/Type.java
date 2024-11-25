@@ -1,6 +1,6 @@
 package dgu.notwenty.domain.user.entity;
 
-public enum UserPosition {
+public enum Type {
     WORKER,
     SUBJECT
 }
