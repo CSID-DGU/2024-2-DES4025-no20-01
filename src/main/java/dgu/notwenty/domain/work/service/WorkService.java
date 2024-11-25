@@ -1,8 +1,9 @@
 package dgu.notwenty.domain.work.service;
 
-import dgu.notwenty.domain.work.dto.WorkDTO.Response.WorkStartResponse;
+import dgu.notwenty.domain.work.dto.WorkDTO.Request.WorkEndRequest;
 import dgu.notwenty.domain.work.dto.WorkDTO.Request.WorkStartRequest;
 
 public interface WorkService {
-    WorkStartResponse startWork(Long userId, WorkStartRequest workStartRequest);
+    String startWork(Long workerId, WorkStartRequest workStartRequest);
+    String endWork(Long workerId, WorkEndRequest workEndRequest);
 }

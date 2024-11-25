@@ -1,4 +1,4 @@
-package dgu.notwenty.domain.work.entity;
+package dgu.notwenty.domain.out.entity;
 
 import dgu.notwenty.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -13,13 +13,13 @@ import java.time.LocalTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Work {
+public class Outlog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "workerId", nullable = false)
+    @JoinColumn(name = "workerId")
     private User worker;
 
     @Column(nullable = false)
@@ -28,9 +28,10 @@ public class Work {
     @Column(nullable = false)
     private LocalTime startTime;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private LocalTime endTime;
 
     @Column(nullable = true)
-    private Long pausedTime;
+    private String reason;
 }
+
