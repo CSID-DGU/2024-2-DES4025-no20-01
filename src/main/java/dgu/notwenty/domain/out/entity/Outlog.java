@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Out {
+public class Outlog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
