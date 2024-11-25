@@ -4,30 +4,33 @@ import dgu.notwenty.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Work {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long workId;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
+    @JoinColumn(name = "workerId", nullable = false)
+    private User worker;
 
     @Column(nullable = false)
-    private LocalDateTime startTime;
+    private LocalDate date;
 
-    private LocalDateTime endTime;
+    @Column(nullable = false)
+    private LocalTime startTime;
 
-    private Boolean status;
+    @Column(nullable = true)
+    private LocalTime endTime;
 
-    @OneToMany(mappedBy = "work")
-    private List<Workout> outList;
+    @Column(nullable = true)
+    private Long pausedTime;
 }
