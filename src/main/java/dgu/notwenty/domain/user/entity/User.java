@@ -27,6 +27,6 @@ public class User {
     @Column(nullable = true)
     private Type type;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private Long totalTime;
 }

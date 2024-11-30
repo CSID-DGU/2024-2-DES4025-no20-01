@@ -12,9 +12,20 @@ spring:
     password: ${DB_PASSWORD}
   jwt:
     secret: ${JWT_SECRET}
-
   security:
     kakao:
       auth:
         client: ${REST_API_KEY}
         redirect: ${REDIRECT_URI}
+
+cloud:
+  aws:
+    s3:
+      bucket: ${BUCKET_NAME}
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}
+    region:
+      static: ${REGION}
+    stack:
+      auto: false
