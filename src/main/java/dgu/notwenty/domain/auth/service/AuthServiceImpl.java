@@ -41,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
                 kakaoProfile.getKakao_account().getEmail(),
                 null,
                 kakaoProfile.getKakao_account().getProfile().getProfile_image_url(),
-                null
+                0L
         );
         return userRepository.save(newUser);
     }

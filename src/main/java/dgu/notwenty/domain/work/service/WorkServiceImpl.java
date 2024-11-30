@@ -1,5 +1,7 @@
 package dgu.notwenty.domain.work.service;
 
+import dgu.notwenty.domain.out.entity.Outlog;
+import dgu.notwenty.domain.out.repository.OutRepository;
 import dgu.notwenty.domain.user.entity.User;
 import dgu.notwenty.domain.user.repository.UserRepository;
 import dgu.notwenty.domain.work.converter.WorkConverter;
@@ -11,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -21,6 +26,7 @@ public class WorkServiceImpl implements WorkService {
 
     private final WorkRepository workRepository;
     private final UserRepository userRepository;
+    private final OutRepository outRepository;
 
     public String startWork(Long workerId, WorkStartRequest workStartRequest) {
         User worker = userRepository.findById(workerId)
@@ -50,6 +56,24 @@ public class WorkServiceImpl implements WorkService {
         work.setPausedTime(workEndRequest.getPausedTime());
         workRepository.save(work);
 
+        addWorkTime(worker, work);  // 해당 날짜의 근무시간을 totalTime에 더함
+
         return "퇴근 처리되었습니다.";
+    }
+
+    private void addWorkTime(User worker, Work work){
+        Long startToEnd = java.time.Duration.between(work.getStartTime(), work.getEndTime()).getSeconds();
+        Long workTime = startToEnd - work.getPausedTime();
+
+        List<Outlog> outs = outRepository.findByWorkerIdAndDate(worker.getId(), work.getDate());
+        for(Outlog out: outs) {
+            LocalTime outStart = out.getStartTime();
+            LocalTime outEnd = out.getEndTime();
+            long outTime = Duration.between(outStart, outEnd).getSeconds();
+            workTime = workTime - outTime;
+        }
+
+        worker.setTotalTime(worker.getTotalTime() + workTime);
+        userRepository.save(worker);
     }
 }
