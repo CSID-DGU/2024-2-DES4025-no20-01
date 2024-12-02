@@ -1,46 +1,43 @@
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet, Alert } from "react-native";
 import { WebView } from "react-native-webview";
-import axios from "axios";
-import qs from "qs";
+import { loginWithKakao } from "../lib/apis/auth";
 
-const REST_API_KEY = "a805301eda7dac65f0e4f24bdee7d443";
-const REDIRECT_URI = "http://localhost:3000/oauth";
-
-const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
+const REST_API_KEY = "2b619c57d18cfd7bd921d94e6ef00940"; // REST API 키
+const REDIRECT_URI = "https://biocheck.store/auth/kakao/login"; // 리디렉션 URI
 
 const KakaoLoginScreen = ({ navigation }) => {
   const [webviewVisible, setWebviewVisible] = useState(true);
 
-  const getCode = (target) => {
-    const exp = "code=";
-    const condition = target.indexOf(exp);
-    if (condition !== -1) {
-      const requestCode = target.substring(condition + exp.length);
-      requestToken(requestCode);
+  // 인가 코드를 처리하는 함수
+  const handleCode = async (code) => {
+    console.log("Received Code:", code);
+
+    try {
+      // API 호출: 백엔드로 인가 코드 전달
+      const response = await loginWithKakao(code);
+
+      const { userId, name, token } = response; // 백엔드 응답 데이터
+      console.log("User Info:", { userId, name });
+      console.log("JWT Token:", token);
+
+      Alert.alert("로그인 성공", `환영합니다, ${name}!`);
+      setWebviewVisible(false);
+
+      // UserTypeSelectionScreen으로 이동
+      navigation.navigate("UserTypeSelectionScreen", { token, userId, name });
+    } catch (error) {
+      console.error("Error during backend login:", error.message);
+      Alert.alert("로그인 실패", error.message);
     }
   };
 
-  const requestToken = async (code) => {
-    const requestTokenUrl = "https://kauth.kakao.com/oauth/token";
-
-    const options = qs.stringify({
-      grant_type: "authorization_code",
-      client_id: REST_API_KEY,
-      redirect_uri: REDIRECT_URI,
-      code,
-    });
-
-    try {
-      const tokenResponse = await axios.post(requestTokenUrl, options);
-      const ACCESS_TOKEN = tokenResponse.data.access_token;
-
-      Alert.alert("로그인 성공", `Access Token: ${ACCESS_TOKEN}`);
-      setWebviewVisible(false);
-      navigation.navigate("MainScreen"); // 로그인 성공 후 메인으로 이동
-    } catch (error) {
-      console.error("Error fetching access token:", error);
-      Alert.alert("로그인 실패", "토큰 요청 중 오류가 발생했습니다.");
+  // WebView에서 URL 변경 시 실행되는 함수
+  const getCode = (url) => {
+    const codeMatch = url.match(/code=([^&]*)/); // URL에서 `code` 추출
+    if (codeMatch) {
+      const code = codeMatch[1];
+      handleCode(code); // 백엔드로 코드 전달
     }
   };
 
@@ -50,13 +47,21 @@ const KakaoLoginScreen = ({ navigation }) => {
         <WebView
           style={styles.webView}
           source={{
-            uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}`,
+            uri: `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${REST_API_KEY}&redirect_uri=${encodeURIComponent(
+              REDIRECT_URI
+            )}`,
           }}
-          injectedJavaScript={INJECTED_JAVASCRIPT}
           javaScriptEnabled
-          onMessage={(event) => {
-            const data = event.nativeEvent.url;
-            getCode(data);
+          onLoadStart={() => console.log("WebView 로드 시작")}
+          onError={(syntheticEvent) => {
+            const { nativeEvent } = syntheticEvent;
+            console.error("WebView 로드 에러:", nativeEvent);
+            Alert.alert("로드 실패", nativeEvent.description);
+          }}
+          onNavigationStateChange={(event) => {
+            if (event.url.includes("code=")) {
+              getCode(event.url);
+            }
           }}
         />
       )}
@@ -71,10 +76,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "space-between",
+    backgroundColor: "#fff",
   },
   webView: {
     flex: 1,
-    width: 400,
-    height: 300,
+    width: "100%",
+    height: "100%",
   },
 });

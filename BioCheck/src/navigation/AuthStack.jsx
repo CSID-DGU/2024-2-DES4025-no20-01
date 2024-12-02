@@ -8,6 +8,7 @@ import ClockInScreen from "../pages/ClockInScreen";
 import WelfareItemRegistrationScreen from "../pages/WelfareItemRegistrationScreen";
 import LeaveReasonScreen from "../pages/LeaveReasonScreen";
 import DailyReportScreen from "../pages/DailyReportScreen";
+import UserTypeSelectionScreen from "../pages/UserTypeSelectionScreen";
 
 const Stack = createStackNavigator();
 
@@ -53,6 +54,11 @@ const AuthStack = () => {
         name="DailyReportScreen"
         component={DailyReportScreen}
         options={{ title: "오늘의 일과 작성" }}
+      />
+      <Stack.Screen
+        name="UserTypeSelectionScreen"
+        component={UserTypeSelectionScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
