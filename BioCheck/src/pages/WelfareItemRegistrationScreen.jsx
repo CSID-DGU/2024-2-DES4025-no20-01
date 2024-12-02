@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,9 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncStorage 사용
+import { getUserInfo } from "../lib/apis/userInfo"; // 사용자 정보 API import
 
 const WelfareItemRegistrationScreen = () => {
   const [image, setImage] = useState(null); // 업로드된 이미지 상태
@@ -27,6 +30,9 @@ const WelfareItemRegistrationScreen = () => {
     { label: "양호", value: "good" },
     { label: "불량", value: "bad" },
   ]);
+  const [userInfo, setUserInfo] = useState(null); // 사용자 정보 상태
+  const [location, setLocation] = useState(null); // 현재 위치 상태
+  const [isClockedIn, setIsClockedIn] = useState(false); // 출근 상태
 
   // 사진 업로드 핸들러
   const pickImage = async () => {
@@ -42,6 +48,55 @@ const WelfareItemRegistrationScreen = () => {
     }
   };
 
+  // 사용자 정보 가져오기
+  const fetchUserInfo = async () => {
+    try {
+      const data = await getUserInfo(); // 사용자 정보 API 호출
+      setUserInfo(data); // 사용자 정보 상태 업데이트
+    } catch (error) {
+      Alert.alert("오류", "사용자 정보를 가져오는 데 실패했습니다.");
+    }
+  };
+
+  // 출근 상태 불러오기
+  const loadClockedInStatus = async () => {
+    try {
+      const status = await AsyncStorage.getItem("isClockedIn");
+      if (status !== null) {
+        setIsClockedIn(JSON.parse(status)); // 저장된 출근 상태 불러오기
+      }
+    } catch (error) {
+      console.error("Error loading clocked in status:", error);
+    }
+  };
+
+  // 현재 위치 가져오기
+  const fetchLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("위치 권한이 필요합니다.");
+        return;
+      }
+
+      const currentLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+      const { latitude, longitude } = currentLocation.coords;
+
+      // reverse geocoding을 통해 주소를 가져옵니다
+      const address = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+
+      // 전체 주소 표시 (formattedAddress로 전체 주소 설정)
+      setLocation(address[0].formattedAddress); // 전체 주소 표시
+    } catch (error) {
+      console.error("Error getting location:", error);
+    }
+  };
+
   // 등록 버튼 핸들러
   const handleRegister = () => {
     if (!image || !quantity || !status) {
@@ -52,12 +107,22 @@ const WelfareItemRegistrationScreen = () => {
     Alert.alert("등록 완료", "복지 물품이 성공적으로 등록되었습니다.");
   };
 
+  // 컴포넌트 마운트 시 사용자 정보 및 위치 가져오기
+  useEffect(() => {
+    fetchUserInfo(); // 사용자 정보 가져오기
+    fetchLocation(); // 현재 위치 가져오기
+    loadClockedInStatus(); // 출근 상태 불러오기
+  }, []);
+
   return (
     <View style={styles.container}>
       {/* 헤더 */}
       <View style={styles.header}>
-        <Text style={styles.title}>서울시 중구 필동3가</Text>
-        <Text style={styles.subTitle}>곧 출근하실 시간~ 혹은 시간 표시</Text>
+        <Text style={styles.title}>{location || "위치 정보 없음"}</Text>{" "}
+        {/* 텍스트를 Text 컴포넌트로 감쌈 */}
+        <Text style={styles.infoText}>
+          {isClockedIn ? "근무 중이십니다." : "곧 출근하실 시간입니다."}
+        </Text>
       </View>
 
       {/* 사진 업로드 */}
@@ -76,11 +141,13 @@ const WelfareItemRegistrationScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="복지사 이름 (자동)"
+          value={userInfo?.name || ""} // 사용자 정보에서 이름 자동 입력
           editable={false} // 자동 입력 필드
         />
         <TextInput
           style={styles.input}
-          placeholder="복지 대상자 이름 (자동)"
+          placeholder="복지 대상자 이름 (고정)"
+          value="홍길동" // 복지 대상자 이름 고정
           editable={false} // 자동 입력 필드
         />
         <TextInput style={styles.input} placeholder="물품명을 적으세요" />
@@ -138,7 +205,7 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 5,
   },
-  subTitle: {
+  infoText: {
     fontSize: 14,
     color: "#666",
     marginBottom: 10,
