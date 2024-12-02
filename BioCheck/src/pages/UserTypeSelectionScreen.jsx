@@ -40,7 +40,7 @@ const UserTypeSelectionScreen = ({ navigation }) => {
       if (value === "WORKER") {
         navigation.navigate("AttendanceScreen");
       } else {
-        navigation.navigate("MainScreen"); // 복지 대상자라면 MainScreen으로 이동
+        navigation.navigate("WelfareAddressScreen"); // 복지 대상자라면 MainScreen으로 이동
       }
     } catch (error) {
       console.error("Error updating user type:", error.response?.data || error);

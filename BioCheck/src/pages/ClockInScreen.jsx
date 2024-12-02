@@ -4,6 +4,8 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import * as LocalAuthentication from "expo-local-authentication";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // AsyncStorage import
+import { startWork } from "../lib/apis/startWork"; // 출근 API 임포트
+import { endWork } from "../lib/apis/endWork"; // 퇴근 API 임포트
 
 const ClockInScreen = () => {
   const [isClockedIn, setIsClockedIn] = useState(false); // 출근 여부 상태
@@ -34,7 +36,6 @@ const ClockInScreen = () => {
       });
       const { latitude, longitude } = location.coords;
       setCurrentLocation({ latitude, longitude });
-      console.log(`${latitude}, ${longitude}`);
 
       // 주소 가져오기 로직 추가
       const geocode = await Location.reverseGeocodeAsync({
@@ -94,19 +95,34 @@ const ClockInScreen = () => {
     setIsAuthenticating(false);
 
     if (result.success) {
+      const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜
+      const currentTime = new Date().toISOString().split("T")[1].split(".")[0]; // 현재 시간
+
       if (!isClockedIn) {
-        Alert.alert("출근 완료", "출근이 성공적으로 등록되었습니다.");
-        setIsClockedIn(true); // 출근 상태로 변경
-        await AsyncStorage.setItem("isClockedIn", JSON.stringify(true)); // 출근 상태 저장
+        try {
+          await startWork(currentDate, currentTime); // 출근 API 호출
+          setIsClockedIn(true); // 출근 상태로 변경
+          await AsyncStorage.setItem("isClockedIn", JSON.stringify(true)); // 출근 상태 저장
+          Alert.alert("출근 완료", "출근이 성공적으로 등록되었습니다.");
+        } catch (error) {
+          Alert.alert("출근 실패", "출근 기록에 실패했습니다.");
+        }
       } else {
-        Alert.alert("퇴근 완료", "퇴근이 성공적으로 등록되었습니다.");
-        setIsClockedIn(false); // 상태 초기화
-        await AsyncStorage.setItem("isClockedIn", JSON.stringify(false)); // 퇴근 상태 저장
+        const pausedTime = 0; // 일시 정지 시간
+        try {
+          await endWork(currentDate, currentTime, pausedTime); // 퇴근 API 호출
+          setIsClockedIn(false); // 퇴근 상태로 변경
+          await AsyncStorage.setItem("isClockedIn", JSON.stringify(false)); // 퇴근 상태 저장
+          Alert.alert("퇴근 완료", "퇴근이 성공적으로 등록되었습니다.");
+        } catch (error) {
+          Alert.alert("퇴근 실패", "퇴근 기록에 실패했습니다.");
+        }
       }
     } else {
       Alert.alert("인증 실패", "지문 인증에 실패했습니다.");
     }
   };
+
   return (
     <View style={styles.container}>
       {/* 헤더 */}

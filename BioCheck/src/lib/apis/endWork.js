@@ -13,21 +13,17 @@ export const endWork = async (date, endTime, pausedTime) => {
 
     const response = await axios.patch(
       `${BACKEND_URL}/api/work/end`,
-      {
-        date,
-        endTime,
-        pausedTime,
-      },
+      { date, endTime, pausedTime },
       {
         headers: {
-          Authorization: `Bearer ${token}`, // Bearer 토큰으로 인증
+          Authorization: `Bearer ${token}`,
         },
       }
     );
 
     return response.data; // 퇴근 성공 시 반환
   } catch (error) {
-    console.error("Error ending work:", error.response?.data || error);
+    console.error("Error ending work:", error);
     throw new Error("퇴근 기록에 실패했습니다.");
   }
 };

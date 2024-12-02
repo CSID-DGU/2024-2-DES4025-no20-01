@@ -9,6 +9,7 @@ import WelfareItemRegistrationScreen from "../pages/WelfareItemRegistrationScree
 import LeaveReasonScreen from "../pages/LeaveReasonScreen";
 import DailyReportScreen from "../pages/DailyReportScreen";
 import UserTypeSelectionScreen from "../pages/UserTypeSelectionScreen";
+import WelfareAddressScreen from "../pages/WelfareAddressScreen";
 
 const Stack = createStackNavigator();
 
@@ -58,6 +59,11 @@ const AuthStack = () => {
       <Stack.Screen
         name="UserTypeSelectionScreen"
         component={UserTypeSelectionScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="WelfareAddressScreen"
+        component={WelfareAddressScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
