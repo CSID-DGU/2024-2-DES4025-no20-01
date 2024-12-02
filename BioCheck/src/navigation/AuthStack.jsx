@@ -10,6 +10,7 @@ import LeaveReasonScreen from "../pages/LeaveReasonScreen";
 import DailyReportScreen from "../pages/DailyReportScreen";
 import UserTypeSelectionScreen from "../pages/UserTypeSelectionScreen";
 import WelfareAddressScreen from "../pages/WelfareAddressScreen";
+import WelfareBeneficiaryScreen from "../pages/WelfareBeneficiaryScreen";
 
 const Stack = createStackNavigator();
 
@@ -64,6 +65,11 @@ const AuthStack = () => {
       <Stack.Screen
         name="WelfareAddressScreen"
         component={WelfareAddressScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="WelfareBeneficiaryScreen"
+        component={WelfareBeneficiaryScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

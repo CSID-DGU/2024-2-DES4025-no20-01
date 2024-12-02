@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import MapView, { Marker } from "react-native-maps"; // 지도 컴포넌트
 import * as Location from "expo-location"; // 위치 기능 사용
 
-const WelfareAddressScreen = () => {
+const WelfareAddressScreen = ({ navigation }) => {
   const [location, setLocation] = useState(null); // 현재 위치 상태
   const [locationAddress, setLocationAddress] =
     useState("위치 정보를 가져오는 중..."); // 현재 위치 주소
@@ -54,7 +54,12 @@ const WelfareAddressScreen = () => {
 
   // 위치가 정확한지 확인하는 버튼 클릭 시 실행
   const handleConfirmLocation = () => {
-    Alert.alert("위치 확인", "네, 정확합니다.");
+    Alert.alert("위치 확인", "네, 정확합니다.", [
+      {
+        text: "확인",
+        onPress: () => navigation.navigate("WelfareBeneficiaryScreen"), // 화면 이동
+      },
+    ]);
   };
 
   return (
@@ -108,7 +113,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     marginBottom: 20,
-    marginTop: 30, // 헤더를 더 아래로 내리기 위해 여백 추가
+    marginTop: 70, // 헤더를 더 아래로 내리기 위해 여백 추가
   },
   title: {
     fontSize: 16,
