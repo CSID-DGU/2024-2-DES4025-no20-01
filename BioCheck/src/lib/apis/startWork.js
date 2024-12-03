@@ -11,9 +11,11 @@ export const startWork = async (date, startTime) => {
       throw new Error("로그인 토큰이 없습니다.");
     }
 
+    console.log("Sending request with:", { date, startTime });
+
     const response = await axios.post(
       `${BACKEND_URL}/api/work/start`,
-      { date, startTime },
+      { date, startTime }, // 요청 데이터
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -21,9 +23,14 @@ export const startWork = async (date, startTime) => {
       }
     );
 
+    console.log("Start work response:", response.data);
     return response.data; // 출근 성공 시 반환
   } catch (error) {
-    console.error("Error starting work:", error);
+    if (error.response) {
+      console.error("Server Error Response:", error.response.data);
+    } else {
+      console.error("Error starting work:", error.message);
+    }
     throw new Error("출근 기록에 실패했습니다.");
   }
 };

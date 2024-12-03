@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import MapView, { Marker } from "react-native-maps"; // 지도 컴포넌트
 import * as Location from "expo-location"; // 위치 기능 사용
+import { Ionicons } from "@expo/vector-icons"; // 아이콘 사용
 
 const WelfareAddressScreen = ({ navigation }) => {
   const [location, setLocation] = useState(null); // 현재 위치 상태
@@ -65,6 +66,11 @@ const WelfareAddressScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        {/* 프로필 아이콘 */}
+        <View style={styles.profileIconContainer}>
+          <Ionicons name="person-circle-outline" size={50} color="#4CAF50" />
+        </View>
+        {/* 주소 텍스트 */}
         <Text style={styles.title}>{locationAddress || "위치 정보 없음"}</Text>
         <Text style={styles.infoText}>
           현재 계신 위치가 복지사 분이 찾아올 주소로 등록됩니다.
@@ -114,6 +120,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     marginTop: 70, // 헤더를 더 아래로 내리기 위해 여백 추가
+  },
+  profileIconContainer: {
+    marginBottom: 10, // 아이콘과 텍스트 사이 여백
   },
   title: {
     fontSize: 16,

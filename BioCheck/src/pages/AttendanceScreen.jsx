@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons"; // 아이콘 사용
 import { getUserInfo } from "../lib/apis/userInfo";
 
 const AttendanceScreen = ({ navigation }) => {
@@ -73,6 +74,13 @@ const AttendanceScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* 사용자 정보 및 출근 상태 */}
       <View style={styles.header}>
+        {/* 프로필 아이콘 */}
+        <Ionicons
+          name="person-circle-outline"
+          size={80}
+          color="#4CAF50"
+          style={styles.profileIcon}
+        />
         <Text style={styles.userName}>{userInfo.name} 님</Text>
         <Text style={styles.infoText}>
           {userInfo.clockedIn ? "근무 중이십니다." : "곧 출근하실 시간입니다."}
@@ -148,12 +156,16 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     marginBottom: 20,
+    marginTop: 50,
+  },
+  profileIcon: {
+    marginBottom: 10, // 아이콘과 텍스트 간 간격
   },
   userName: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
-    marginTop: 30,
+    marginTop: 10,
   },
   infoText: {
     fontSize: 14,
@@ -217,7 +229,7 @@ const styles = StyleSheet.create({
   },
   buttonGroup: {
     marginTop: 20,
-    marginBottom: 70,
+    marginBottom: 10,
   },
   mainButton: {
     backgroundColor: "#4CAF50",

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, Image, Alert } from "react-native";
 import * as Location from "expo-location";
+import { Ionicons } from "@expo/vector-icons"; // 아이콘 사용
 
 const WelfareBeneficiaryScreen = () => {
   const [locationAddress, setLocationAddress] =
@@ -89,6 +90,13 @@ const WelfareBeneficiaryScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        {/* 프로필 아이콘 */}
+        <Ionicons
+          name="person-circle-outline"
+          size={80}
+          color="#4CAF50"
+          style={styles.profileIcon}
+        />
         <Text style={styles.title}>{locationAddress}</Text>
         <Text style={styles.infoText}>{currentDateTime}</Text>
         <Text style={styles.infoText}>복지 대상자: 서하은 님</Text>
@@ -128,7 +136,10 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     marginBottom: 15, // 여백 줄이기
-    marginTop: 100,
+    marginTop: 50,
+  },
+  profileIcon: {
+    marginBottom: 10, // 아이콘과 텍스트 사이 간격
   },
   title: {
     fontSize: 16,
@@ -146,7 +157,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    marginTop: 100,
+    marginTop: 20,
   },
   itemList: {
     paddingHorizontal: 10,
@@ -181,8 +192,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   contactText: {
-    fontSize: 14,
-    marginBottom: 5,
+    fontSize: 20,
+    marginBottom: 8,
   },
 });
 

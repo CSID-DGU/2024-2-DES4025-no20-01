@@ -96,11 +96,13 @@ const ClockInScreen = () => {
 
     if (result.success) {
       const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜
-      const currentTime = new Date().toLocaleTimeString("ko-KR"); // 현재 시간
+      const currentTime = new Date()
+        .toTimeString() // 시간 문자열 (예: "16:12:15 GMT+0900 (KST)")
+        .split(" ")[0]; // 시간만 추출 (예: "16:12:15")
 
       if (!isClockedIn) {
         try {
-          await startWork(currentDate, currentTime);
+          await startWork(currentDate, currentTime); // ISO 시간 형식 사용
           setIsClockedIn(true);
           await AsyncStorage.setItem(
             "clockInData",
@@ -199,7 +201,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     marginVertical: 20,
-    marginTop: 70,
+    marginTop: 100,
   },
   title: {
     fontSize: 16,
@@ -235,24 +237,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     alignItems: "center",
     borderRadius: 8,
+    marginBottom: 30,
   },
   clockButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
-  },
-  tabBar: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#ddd",
-  },
-  tabButton: {
-    alignItems: "center",
-  },
-  tabButtonText: {
-    fontSize: 12,
-    color: "#666",
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,8 +8,14 @@ import {
   Alert,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUserInfo } from "../lib/apis/userInfo"; // 사용자 정보 API import
 
 const LeaveReasonScreen = () => {
+  const [userName, setUserName] = useState("이름을 불러오는 중...");
+  const [locationAddress, setLocationAddress] =
+    useState("주소를 불러오는 중...");
+  const [clockInTime, setClockInTime] = useState("시간 정보를 불러오는 중...");
   const [leaveRecordOpen, setLeaveRecordOpen] = useState(false); // 드롭다운 열림 여부
   const [leaveRecord, setLeaveRecord] = useState(null); // 선택된 값
   const [leaveRecordItems, setLeaveRecordItems] = useState([
@@ -18,6 +24,40 @@ const LeaveReasonScreen = () => {
     { label: "2023.11.25 14:00 ~ 15:00", value: "record3" },
   ]);
   const [reason, setReason] = useState(""); // 이탈 사유
+
+  // 사용자 정보 가져오기
+  const fetchUserInfo = async () => {
+    try {
+      const data = await getUserInfo(); // 사용자 정보 API 호출
+      setUserName(data.name || "이름 정보 없음"); // 사용자 이름 업데이트
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      Alert.alert("오류", "사용자 정보를 가져오는 데 실패했습니다.");
+    }
+  };
+
+  // 출근 정보 가져오기
+  const fetchClockInData = async () => {
+    try {
+      const clockInData = await AsyncStorage.getItem("clockInData");
+      if (clockInData) {
+        const parsedClockInData = JSON.parse(clockInData);
+        setLocationAddress(parsedClockInData.address || "주소 정보 없음");
+        setClockInTime(parsedClockInData.time || "시간 정보 없음");
+      } else {
+        setLocationAddress("저장된 주소가 없습니다.");
+        setClockInTime("저장된 시간이 없습니다.");
+      }
+    } catch (error) {
+      console.error("Error fetching clock in data:", error);
+      Alert.alert("오류", "출근 정보를 가져오는 데 실패했습니다.");
+    }
+  };
+
+  useEffect(() => {
+    fetchUserInfo(); // 사용자 정보 가져오기
+    fetchClockInData(); // 출근 정보 가져오기
+  }, []);
 
   const handleRegister = () => {
     if (!leaveRecord || !reason) {
@@ -32,15 +72,17 @@ const LeaveReasonScreen = () => {
     <View style={styles.container}>
       {/* 헤더 */}
       <View style={styles.header}>
-        <Text style={styles.title}>서울시 중구 필동3가</Text>
-        <Text style={styles.subTitle}>곧 출근하실 시간~ 혹은 시간 표시</Text>
+        <Text style={styles.title}>{locationAddress}</Text>
+        <Text style={styles.subTitle}>{clockInTime}</Text>
       </View>
 
       {/* 입력 필드 */}
       <View style={styles.inputContainer}>
+        {/* 복지사 이름 */}
         <TextInput
           style={styles.input}
           placeholder="복지사 이름 (자동)"
+          value={userName} // 유저 이름 표시
           editable={false} // 자동 입력 필드
         />
 
@@ -87,6 +129,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     marginBottom: 20,
+    marginTop: 100,
   },
   title: {
     fontSize: 16,
