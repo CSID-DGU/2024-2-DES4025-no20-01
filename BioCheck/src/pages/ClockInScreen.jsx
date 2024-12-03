@@ -96,23 +96,39 @@ const ClockInScreen = () => {
 
     if (result.success) {
       const currentDate = new Date().toISOString().split("T")[0]; // 현재 날짜
-      const currentTime = new Date().toISOString().split("T")[1].split(".")[0]; // 현재 시간
+      const currentTime = new Date().toLocaleTimeString("ko-KR"); // 현재 시간
 
       if (!isClockedIn) {
         try {
-          await startWork(currentDate, currentTime); // 출근 API 호출
-          setIsClockedIn(true); // 출근 상태로 변경
-          await AsyncStorage.setItem("isClockedIn", JSON.stringify(true)); // 출근 상태 저장
-          Alert.alert("출근 완료", "출근이 성공적으로 등록되었습니다.");
+          await startWork(currentDate, currentTime);
+          setIsClockedIn(true);
+          await AsyncStorage.setItem(
+            "clockInData",
+            JSON.stringify({
+              isClockedIn: true,
+              time: currentTime,
+              address: locationAddress,
+            })
+          );
+          Alert.alert(
+            "출근 완료",
+            `출근이 성공적으로 등록되었습니다.\n출근 시간: ${currentTime}`
+          );
         } catch (error) {
           Alert.alert("출근 실패", "출근 기록에 실패했습니다.");
         }
       } else {
-        const pausedTime = 0; // 일시 정지 시간
         try {
-          await endWork(currentDate, currentTime, pausedTime); // 퇴근 API 호출
-          setIsClockedIn(false); // 퇴근 상태로 변경
-          await AsyncStorage.setItem("isClockedIn", JSON.stringify(false)); // 퇴근 상태 저장
+          await endWork(currentDate, currentTime, 0);
+          setIsClockedIn(false);
+          await AsyncStorage.setItem(
+            "clockInData",
+            JSON.stringify({
+              isClockedIn: false,
+              time: null,
+              address: null,
+            })
+          );
           Alert.alert("퇴근 완료", "퇴근이 성공적으로 등록되었습니다.");
         } catch (error) {
           Alert.alert("퇴근 실패", "퇴근 기록에 실패했습니다.");
@@ -169,19 +185,6 @@ const ClockInScreen = () => {
             : "출근 등록"}
         </Text>
       </TouchableOpacity>
-
-      {/* 하단 네비게이션 */}
-      <View style={styles.tabBar}>
-        <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>홈</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>복지 대상자 관리</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.tabButton}>
-          <Text style={styles.tabButtonText}>설정</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
@@ -196,6 +199,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     marginVertical: 20,
+    marginTop: 70,
   },
   title: {
     fontSize: 16,

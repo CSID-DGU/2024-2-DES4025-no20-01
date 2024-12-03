@@ -5,17 +5,26 @@ import WelfareBeneficiaryScreen from "../pages/WelfareBeneficiaryScreen";
 import ClockInScreen from "../pages/ClockInScreen";
 import WelfareAddressScreen from "../pages/WelfareAddressScreen";
 import { Ionicons } from "@expo/vector-icons";
+import SettingsScreen from "../pages/SettingsScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 // 스택 네비게이터
-const StackNavigator = () => {
+const WelfareStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      initialRouteName="WelfareAddressScreen"
+      screenOptions={{ headerShown: false }}
+    >
       <Stack.Screen
         name="WelfareBeneficiaryScreen"
         component={WelfareBeneficiaryScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="WelfareAddressScreen"
+        component={WelfareAddressScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
@@ -41,29 +50,22 @@ const TabNavigator1 = () => {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: "purple", // 활성 아이콘 색상: 보라색
+        tabBarActiveTintColor: "green", // 활성 아이콘 색상: 보라색
         tabBarInactiveTintColor: "gray", // 비활성 아이콘 색상
       })}
     >
       {/* 홈 탭 */}
       <Tab.Screen
         name="Home"
-        component={WelfareBeneficiaryScreen}
+        component={WelfareStack}
         options={{ title: "홈" }}
       />
 
       {/* 설정 탭 */}
       <Tab.Screen
         name="Settings"
-        component={ClockInScreen}
+        component={SettingsScreen}
         options={{ title: "설정" }}
-      />
-
-      {/* 주소 관리 스택 */}
-      <Tab.Screen
-        name="Address"
-        component={StackNavigator}
-        options={{ title: "주소 관리" }}
       />
     </Tab.Navigator>
   );
