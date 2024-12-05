@@ -20,11 +20,22 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff",
         "newArchEnabled": true
-
-      }
+      },
+      "package": "com.dewbeeny.BioCheck"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0bee47ce-8b2c-4cac-8b76-0f6a7eeb3037"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/0bee47ce-8b2c-4cac-8b76-0f6a7eeb3037"
     }
   }
 }

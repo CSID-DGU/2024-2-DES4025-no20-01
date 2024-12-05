@@ -1,39 +1,134 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  Image,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons"; // 아이콘 사용
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUserInfo } from "../lib/apis/userInfo";
 
 const AttendanceScreen = ({ navigation }) => {
+  const [userInfo, setUserInfo] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [isClockedIn, setIsClockedIn] = useState(false); // 출근 상태
+  const [items] = useState([
+    {
+      id: "1",
+      name: "쌀",
+      quantity: "20kg",
+      location: "Jawa Timur, Indonesia",
+      image: "https://via.placeholder.com/256x222", // 더미 이미지
+    },
+    {
+      id: "2",
+      name: "물티슈",
+      quantity: "200개",
+      location: "Jawa Timur, Indonesia",
+      image: "https://via.placeholder.com/256x222", // 더미 이미지
+    },
+    {
+      id: "3",
+      name: "옷",
+      quantity: "30벌",
+      location: "Seoul, South Korea",
+      image: "https://via.placeholder.com/256x222", // 더미 이미지
+    },
+  ]);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const userData = await getUserInfo();
+        setUserInfo(userData);
+
+        // 로컬 스토리지에서 출근 상태 확인
+        const clockInData = await AsyncStorage.getItem("clockInData");
+        if (clockInData) {
+          const parsedData = JSON.parse(clockInData);
+          setIsClockedIn(parsedData.isClockedIn || false);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  const renderItem = ({ item }) => (
+    <View style={styles.itemBox}>
+      <Image source={{ uri: item.image }} style={styles.itemImage} />
+      <Text style={styles.itemText}>
+        {item.name} {item.quantity}
+      </Text>
+      <Text style={styles.itemSubText}>{item.location}</Text>
+    </View>
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text>로딩 중...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      {/* 사용자 정보 및 출근 버튼 */}
+      {/* 사용자 정보 및 출근 상태 */}
       <View style={styles.header}>
-        <Text style={styles.userName}>사회복지사 님</Text>
-        <Text style={styles.infoText}>근 클러킹 시간 ~ 혹은 시간 표시</Text>
+        {/* 프로필 아이콘 */}
+        <Ionicons
+          name="person-circle-outline"
+          size={80}
+          color="#4CAF50"
+          style={styles.profileIcon}
+        />
+        <Text style={styles.userName}>{userInfo.name} 님</Text>
+        <Text style={styles.infoText}>
+          {isClockedIn ? "근무 중이십니다." : "곧 출근하실 시간입니다."}
+        </Text>
         <TouchableOpacity
           style={styles.attendanceButton}
-          onPress={() => navigation.navigate("ClockInScreen")}
+          onPress={() =>
+            navigation.navigate(
+              isClockedIn ? "ClockOutScreen" : "ClockInScreen"
+            )
+          }
         >
-          <Text style={styles.attendanceButtonText}>출근 도장 찍기</Text>
+          <Text style={styles.attendanceButtonText}>
+            {isClockedIn ? "퇴근 도장 찍기" : "출근 도장 찍기"}
+          </Text>
         </TouchableOpacity>
       </View>
 
-      {/* 복지 대상자 정보 */}
+      {/* 복지사 총 근무 시간 */}
       <View style={styles.targetContainer}>
         <Text style={styles.targetText}>
-          복지 대상자: 김OO 님{"\n"}복지서비스 이행한 근무 시간 : 12시간
+          복지사님의 이번 달 총 근무 시간:{" "}
+          {Math.floor(userInfo.totalTime / 3600)}시간
         </Text>
       </View>
 
-      {/* 복지사님을 통해 지원된 물품 */}
-      <View style={styles.itemContainer}>
-        <View style={styles.itemBox}>
-          <Text style={styles.itemText}>물품: 20kg</Text>
-          <Text style={styles.itemSubText}>Java Timur, Indonesia</Text>
-        </View>
-        <View style={styles.itemBox}>
-          <Text style={styles.itemText}>물품: 200개</Text>
-          <Text style={styles.itemSubText}>Java Timur, Indonesia</Text>
-        </View>
-      </View>
+      {/* 물품 목록 */}
+      <Text style={styles.sectionTitle}>
+        이번 달 복지사님을 통해 지원된 물품
+      </Text>
+      <FlatList
+        data={items}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.itemList}
+      />
 
       {/* 주요 버튼 */}
       <View style={styles.buttonGroup}>
@@ -68,14 +163,25 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
   header: {
     alignItems: "center",
     marginBottom: 20,
+    marginTop: 50,
+  },
+  profileIcon: {
+    marginBottom: 10, // 아이콘과 텍스트 간 간격
   },
   userName: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+    marginTop: 10,
   },
   infoText: {
     fontSize: 14,
@@ -103,29 +209,43 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
   },
-  itemContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 10,
+  },
+  itemList: {
+    paddingHorizontal: 10,
+    marginTop: 30,
   },
   itemBox: {
+    width: 256,
+    height: 222,
     backgroundColor: "#f2f2f2",
     padding: 10,
     borderRadius: 10,
-    flex: 1,
     marginHorizontal: 5,
     alignItems: "center",
   },
+  itemImage: {
+    width: "100%",
+    height: "70%",
+    borderRadius: 10,
+    marginBottom: 5,
+  },
   itemText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
+    textAlign: "center",
   },
   itemSubText: {
     fontSize: 12,
     color: "#777",
+    textAlign: "center",
   },
   buttonGroup: {
     marginTop: 20,
+    marginBottom: 10,
   },
   mainButton: {
     backgroundColor: "#4CAF50",

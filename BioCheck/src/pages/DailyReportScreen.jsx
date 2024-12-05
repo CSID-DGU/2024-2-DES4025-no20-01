@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,9 +7,58 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUserInfo } from "../lib/apis/userInfo"; // 유저 정보 API import
 
 const DailyReportScreen = () => {
+  const [userName, setUserName] = useState("이름을 불러오는 중...");
+  const [locationAddress, setLocationAddress] =
+    useState("주소를 불러오는 중...");
+  const [todayDate, setTodayDate] = useState(""); // 오늘 날짜
   const [report, setReport] = useState(""); // 오늘의 서비스 기록
+
+  // 유저 이름 가져오기
+  const fetchUserName = async () => {
+    try {
+      const data = await getUserInfo();
+      setUserName(data.name || "이름 정보 없음");
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      Alert.alert("오류", "복지사 이름을 가져오는 데 실패했습니다.");
+      setUserName("데이터 불러오기 실패");
+    }
+  };
+
+  // AsyncStorage에서 위치 정보 가져오기
+  const fetchLocationData = async () => {
+    try {
+      const clockInData = await AsyncStorage.getItem("clockInData");
+      if (clockInData) {
+        const parsedData = JSON.parse(clockInData);
+        setLocationAddress(parsedData.address || "위치 정보 없음");
+      } else {
+        setLocationAddress("저장된 위치 정보가 없습니다.");
+      }
+    } catch (error) {
+      console.error("Error fetching location data:", error);
+      Alert.alert("오류", "위치 정보를 불러오는 데 실패했습니다.");
+    }
+  };
+
+  // 오늘 날짜 가져오기
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, "0"); // 월 2자리
+    const date = today.getDate().toString().padStart(2, "0"); // 일 2자리
+    setTodayDate(`${year}-${month}-${date}`);
+  };
+
+  useEffect(() => {
+    fetchUserName(); // 복지사 이름 가져오기
+    fetchLocationData(); // 위치 정보 가져오기
+    getTodayDate(); // 오늘 날짜 가져오기
+  }, []);
 
   const handleRegister = () => {
     if (!report) {
@@ -24,8 +73,8 @@ const DailyReportScreen = () => {
     <View style={styles.container}>
       {/* 헤더 */}
       <View style={styles.header}>
-        <Text style={styles.title}>서울시 중구 필동3가</Text>
-        <Text style={styles.subTitle}>오늘 날짜</Text>
+        <Text style={styles.title}>{locationAddress}</Text>
+        <Text style={styles.subTitle}>{todayDate}</Text>
       </View>
 
       {/* 입력 필드 */}
@@ -33,12 +82,14 @@ const DailyReportScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="복지사 이름 (자동)"
+          value={userName} // 유저 이름 표시
           editable={false} // 자동 입력 필드
         />
         <TextInput
           style={styles.input}
-          placeholder="복지대상자 이름 (자동)"
-          editable={false} // 자동 입력 필드
+          placeholder="복지대상자 이름"
+          value="홍길동" // 복지 대상자 이름 고정
+          editable={false} // 수정 불가
         />
         <TextInput
           style={[styles.input, styles.reportInput]}
@@ -69,6 +120,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     marginBottom: 20,
+    marginTop: 100,
   },
   title: {
     fontSize: 16,

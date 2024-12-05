@@ -1,13 +1,18 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import MainScreen from "../pages/MainScreen"; // 메인화면
-import KakaoLoginScreen from "../pages/loginScreen"; // 카카오 로그인 화면
+import TabNavigator1 from "../navigation/TabNavigator1"; // 탭 1 네비게이터
+import TabNavigator2 from "../navigation/TabNavigator2"; // 탭 2 네비게이터
 import WelfareRegistrationScreen from "../pages/WelfareRegistrationScreen";
 import AttendanceScreen from "../pages/AttendanceScreen";
 import ClockInScreen from "../pages/ClockInScreen";
 import WelfareItemRegistrationScreen from "../pages/WelfareItemRegistrationScreen";
 import LeaveReasonScreen from "../pages/LeaveReasonScreen";
 import DailyReportScreen from "../pages/DailyReportScreen";
+import UserTypeSelectionScreen from "../pages/UserTypeSelectionScreen";
+import WelfareAddressScreen from "../pages/WelfareAddressScreen";
+import WelfareBeneficiaryScreen from "../pages/WelfareBeneficiaryScreen";
+import MainScreen from "../pages/MainScreen";
+import KakaoLoginScreen from "../pages/loginScreen";
 
 const Stack = createStackNavigator();
 
@@ -15,44 +20,34 @@ const AuthStack = () => {
   return (
     <Stack.Navigator initialRouteName="MainScreen">
       <Stack.Screen
+        name="MainTabs"
+        component={TabNavigator2}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="WelfareMainTabs"
+        component={TabNavigator1}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="MainScreen"
         component={MainScreen}
-        options={{ title: "메인 화면", headerShown: false }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="KakaoLoginScreen"
         component={KakaoLoginScreen}
-        options={{ title: "카카오 로그인" }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="WelfareRegistrationScreen"
         component={WelfareRegistrationScreen}
-        options={{ title: "복지대상자 등록" }}
+        options={{ title: "복지대상자 등록", headerShown: true }}
       />
       <Stack.Screen
-        name="AttendanceScreen"
-        component={AttendanceScreen}
-        options={{ title: "출퇴근 기록" }}
-      />
-      <Stack.Screen
-        name="ClockInScreen"
-        component={ClockInScreen}
-        options={{ title: "출근 도장" }}
-      />
-      <Stack.Screen
-        name="WelfareItemRegistrationScreen"
-        component={WelfareItemRegistrationScreen}
-        options={{ title: "복지 물품 등록" }}
-      />
-      <Stack.Screen
-        name="LeaveReasonScreen"
-        component={LeaveReasonScreen}
-        options={{ title: "이탈 사유 등록" }}
-      />
-      <Stack.Screen
-        name="DailyReportScreen"
-        component={DailyReportScreen}
-        options={{ title: "오늘의 일과 작성" }}
+        name="UserTypeSelectionScreen"
+        component={UserTypeSelectionScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
