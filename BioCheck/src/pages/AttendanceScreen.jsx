@@ -8,11 +8,13 @@ import {
   Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons"; // 아이콘 사용
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUserInfo } from "../lib/apis/userInfo";
 
 const AttendanceScreen = ({ navigation }) => {
   const [userInfo, setUserInfo] = useState({});
   const [loading, setLoading] = useState(true);
+  const [isClockedIn, setIsClockedIn] = useState(false); // 출근 상태
   const [items] = useState([
     {
       id: "1",
@@ -42,6 +44,14 @@ const AttendanceScreen = ({ navigation }) => {
       try {
         const userData = await getUserInfo();
         setUserInfo(userData);
+
+        // 로컬 스토리지에서 출근 상태 확인
+        const clockInData = await AsyncStorage.getItem("clockInData");
+        if (clockInData) {
+          const parsedData = JSON.parse(clockInData);
+          setIsClockedIn(parsedData.isClockedIn || false);
+        }
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching user info:", error);
@@ -83,13 +93,19 @@ const AttendanceScreen = ({ navigation }) => {
         />
         <Text style={styles.userName}>{userInfo.name} 님</Text>
         <Text style={styles.infoText}>
-          {userInfo.clockedIn ? "근무 중이십니다." : "곧 출근하실 시간입니다."}
+          {isClockedIn ? "근무 중이십니다." : "곧 출근하실 시간입니다."}
         </Text>
         <TouchableOpacity
           style={styles.attendanceButton}
-          onPress={() => navigation.navigate("ClockInScreen")}
+          onPress={() =>
+            navigation.navigate(
+              isClockedIn ? "ClockOutScreen" : "ClockInScreen"
+            )
+          }
         >
-          <Text style={styles.attendanceButtonText}>출근 도장 찍기</Text>
+          <Text style={styles.attendanceButtonText}>
+            {isClockedIn ? "퇴근 도장 찍기" : "출근 도장 찍기"}
+          </Text>
         </TouchableOpacity>
       </View>
 

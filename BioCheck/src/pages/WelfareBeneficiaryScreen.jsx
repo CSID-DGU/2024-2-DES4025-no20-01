@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, Image, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons"; // 아이콘 사용
+import { getRecentHistory } from "../lib/apis/serviceHistoryApi"; // 최근 승인 내역 API 가져오기
 
-const WelfareBeneficiaryScreen = () => {
+const WelfareBeneficiaryScreen = ({ navigation }) => {
   const [locationAddress, setLocationAddress] =
     useState("위치 정보를 가져오는 중...");
   const [currentDateTime, setCurrentDateTime] = useState("");
+  const [recentApproval, setRecentApproval] = useState(null); // 최근 승인 내역
   const [items] = useState([
     {
       id: "1",
@@ -70,9 +80,22 @@ const WelfareBeneficiaryScreen = () => {
     setCurrentDateTime(`${formattedDate} ${formattedTime}`);
   };
 
+  // 최근 승인 내역 가져오기
+  const fetchRecentApproval = async () => {
+    try {
+      const data = await getRecentHistory();
+      if (data.recentHistoryList && data.recentHistoryList.length > 0) {
+        setRecentApproval(data.recentHistoryList[0]); // 가장 최근 내역만 가져오기
+      }
+    } catch (error) {
+      console.error("Error fetching recent approval:", error);
+    }
+  };
+
   useEffect(() => {
     fetchLocation();
     updateDateTime();
+    fetchRecentApproval();
     const interval = setInterval(updateDateTime, 1000); // 1초마다 업데이트
     return () => clearInterval(interval);
   }, []);
@@ -89,6 +112,24 @@ const WelfareBeneficiaryScreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* 알림 아이콘과 최근 승인 내역 말풍선 */}
+      <View style={styles.notificationContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("ServiceApprovalScreen")}
+          style={styles.notificationButton}
+        >
+          <Ionicons name="notifications-outline" size={28} color="#000" />
+          <View style={styles.notificationDot} />
+        </TouchableOpacity>
+        {recentApproval && (
+          <View style={styles.recentApprovalBubble}>
+            <Text style={styles.recentApprovalText}>
+              최근 승인: {recentApproval.content}
+            </Text>
+          </View>
+        )}
+      </View>
+
       <View style={styles.header}>
         {/* 프로필 아이콘 */}
         <Ionicons
@@ -133,13 +174,43 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#fff",
   },
+  notificationContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+  },
+  notificationButton: {
+    position: "relative",
+    marginLeft: 10,
+  },
+  notificationDot: {
+    width: 10,
+    height: 10,
+    backgroundColor: "red",
+    borderRadius: 5,
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
+  recentApprovalBubble: {
+    backgroundColor: "#f9f9f9",
+    padding: 10,
+    borderRadius: 15,
+    marginLeft: 10,
+    maxWidth: "80%",
+  },
+  recentApprovalText: {
+    fontSize: 14,
+    color: "#333",
+  },
   header: {
     alignItems: "center",
-    marginBottom: 15, // 여백 줄이기
-    marginTop: 50,
+    marginBottom: 15,
+    marginTop: 40,
   },
   profileIcon: {
-    marginBottom: 10, // 아이콘과 텍스트 사이 간격
+    marginBottom: 10,
   },
   title: {
     fontSize: 16,
@@ -151,7 +222,7 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 14,
     color: "#666",
-    marginBottom: 5, // 여백 조정
+    marginBottom: 5,
     textAlign: "center",
   },
   sectionTitle: {

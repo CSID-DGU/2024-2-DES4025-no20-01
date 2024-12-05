@@ -118,7 +118,9 @@ const WelfareItemRegistrationScreen = () => {
     <View style={styles.container}>
       {/* 헤더 */}
       <View style={styles.header}>
-        <Text style={styles.title}>{location || "위치 정보 없음"}</Text>{" "}
+        <View>
+          <Text style={styles.title}>{location || "위치 정보 없음"}</Text>
+        </View>
         {/* 텍스트를 Text 컴포넌트로 감쌈 */}
         <Text style={styles.infoText}>
           {isClockedIn ? "근무 중이십니다." : "곧 출근하실 시간입니다."}

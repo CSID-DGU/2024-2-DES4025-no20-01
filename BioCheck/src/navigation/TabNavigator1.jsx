@@ -6,6 +6,7 @@ import ClockInScreen from "../pages/ClockInScreen";
 import WelfareAddressScreen from "../pages/WelfareAddressScreen";
 import { Ionicons } from "@expo/vector-icons";
 import SettingsScreen from "../pages/SettingsScreen";
+import ServiceApprovalScreen from "../pages/ServiceApprovalScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -25,6 +26,11 @@ const WelfareStack = () => {
       <Stack.Screen
         name="WelfareAddressScreen"
         component={WelfareAddressScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ServiceApprovalScreen"
+        component={ServiceApprovalScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
