@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   webView: {
     flex: 1,
-    width: "100%",
-    height: "100%",
+    width: 400,
+    height: 300,
   },
 });
